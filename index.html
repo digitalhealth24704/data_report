@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>ระบบขอรายงานข้อมูล - รพ.กุดรัง</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { font-family: 'Prompt', sans-serif; background-color: #f0fdfa; }
+  </style>
+</head>
+<body class="p-3 md:p-8 flex justify-center min-h-screen items-start">
+
+  <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl overflow-hidden border border-teal-100 mt-2">
+    
+    <div onclick="goToAdmin()" class="bg-gradient-to-r from-teal-600 to-teal-500 text-white p-6 text-center cursor-pointer hover:from-teal-700 hover:to-teal-600 transition duration-300" title="เข้าสู่ระบบหลังบ้าน">
+      <div class="inline-block p-3 bg-white/20 rounded-full mb-3 shadow-sm">
+        <i class="fa-solid fa-file-medical text-3xl"></i>
+      </div>
+      <h2 class="text-2xl font-semibold tracking-wide">ระบบขอรายงานข้อมูล</h2>
+      <p class="text-teal-50 mt-1 text-sm font-light">กลุ่มงานดิจิทัลการแพทย์ โรงพยาบาลกุดรัง</p>
+    </div>
+
+    <div class="flex justify-center p-4 bg-gray-50 border-b border-gray-100 space-x-2">
+      <button onclick="switchTab('form')" id="btn-form" class="flex-1 py-2.5 rounded-full bg-teal-600 text-white font-medium shadow-md transition-all text-sm flex justify-center items-center">
+        <i class="fa-solid fa-pen-to-square mr-2"></i> ขอข้อมูลใหม่
+      </button>
+      <button onclick="switchTab('dash')" id="btn-dash" class="flex-1 py-2.5 rounded-full bg-white text-gray-600 border border-gray-200 font-medium hover:bg-gray-100 transition-all text-sm flex justify-center items-center">
+        <i class="fa-solid fa-chart-pie mr-2"></i> ติดตามสถานะ
+      </button>
+    </div>
+
+    <!-- ฟอร์มกรอกข้อมูล -->
+    <div id="section-form" class="block">
+      <div class="bg-amber-50 border-l-4 border-amber-400 p-4 mx-6 mt-5 rounded-r-md">
+        <div class="flex items-start">
+          <i class="fa-solid fa-circle-exclamation text-amber-500 mt-0.5 text-lg"></i>
+          <div class="ml-3">
+            <p class="text-sm text-amber-900 font-medium">ระยะเวลาดำเนินการ 1-5 วันทำการ</p>
+            <p class="text-xs text-amber-700 mt-0.5">(ขึ้นอยู่กับความยากง่ายและเงื่อนไข HOSxP)</p>
+          </div>
+        </div>
+      </div>
+
+      <form id="dataRequestForm" class="p-6 space-y-5" onsubmit="handleFormSubmit(event)">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div>
+            <label class="block text-sm font-medium text-teal-800 mb-1"><i class="fa-solid fa-user text-teal-500 mr-1"></i> ชื่อ-สกุล ผู้ขอ</label>
+            <input type="text" name="requesterName" required class="w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-teal-500 text-sm">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-teal-800 mb-1"><i class="fa-solid fa-house-medical text-teal-500 mr-1"></i> แผนก / หน่วยงาน</label>
+            <input type="text" name="department" required class="w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-teal-500 text-sm">
+          </div>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-teal-800 mb-2"><i class="fa-solid fa-list-check text-teal-500 mr-1"></i> รูปแบบข้อมูลที่ต้องการ</label>
+          <div class="flex space-x-6 pl-1">
+            <label class="inline-flex items-center cursor-pointer">
+              <input type="radio" name="dataType" value="รายชื่อ" required class="text-teal-600 focus:ring-teal-500 w-4 h-4">
+              <span class="ml-2 text-sm text-gray-700">รายชื่อ (เช่น ไฟล์ Excel)</span>
+            </label>
+            <label class="inline-flex items-center cursor-pointer">
+              <input type="radio" name="dataType" value="จำนวน" required class="text-teal-600 focus:ring-teal-500 w-4 h-4">
+              <span class="ml-2 text-sm text-gray-700">จำนวน (ตัวเลขสถิติ)</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-teal-800 mb-1"><i class="fa-solid fa-file-lines text-teal-500 mr-1"></i> ชื่อรายงาน / ข้อมูลที่ต้องการ</label>
+          <input type="text" name="reportName" required class="w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-teal-500 text-sm">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-teal-800 mb-1"><i class="fa-solid fa-bullseye text-teal-500 mr-1"></i> วัตถุประสงค์การนำไปใช้</label>
+          <input type="text" name="purpose" required class="w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-teal-500 text-sm">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-teal-800 mb-1"><i class="fa-solid fa-database text-teal-500 mr-1"></i> เงื่อนไขการดึงข้อมูล (ระบุให้ชัดเจน)</label>
+          <textarea name="criteria" required rows="3" class="w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-teal-500 text-sm placeholder-gray-400" placeholder="ช่วงวันที่ต้องการข้อมูล แผนกที่ตรวจ รหัสโรค/หัตถการ หรือเงื่อนไขอื่นๆ"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-teal-800 mb-1"><i class="fa-solid fa-paperclip text-teal-500 mr-1"></i> แนบไฟล์ Template / ตัวอย่าง (ถ้ามี)</label>
+          <input type="file" id="fileUpload" class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 transition cursor-pointer">
+        </div>
+        
+        <div class="pt-2">
+          <button type="submit" id="submitBtn" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-3.5 px-4 rounded-xl shadow-md transition duration-200 flex justify-center items-center text-lg">
+            <i class="fa-solid fa-paper-plane mr-2"></i> ส่งคำขอข้อมูล
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- แดชบอร์ดติดตามสถานะ -->
+    <div id="section-dash" class="hidden p-4 md:p-6 bg-gray-50 min-h-[400px]">
+      <div class="flex justify-between items-center mb-3 px-2">
+        <h3 class="text-gray-700 font-semibold"><i class="fa-solid fa-clock-rotate-left mr-1"></i> ประวัติคำขอ</h3>
+        <button onclick="loadUserDashboard()" class="text-teal-600 bg-teal-50 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-teal-100 transition shadow-sm">
+          <i class="fa-solid fa-rotate mr-1"></i> รีเฟรช
+        </button>
+      </div>
+
+      <div class="px-2 mb-4">
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"><i class="fa-solid fa-search text-gray-400"></i></div>
+          <input type="text" id="searchInput" onkeyup="filterData()" class="bg-white border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-teal-500 block w-full pl-10 p-3 shadow-sm" placeholder="ค้นหาชื่อ, แผนก, รายงาน หรือสถานะ...">
+        </div>
+      </div>
+      <div id="userDashContent" class="space-y-3"><div class="text-center py-10"><i class="fa-solid fa-spinner fa-spin text-3xl text-teal-400"></i><p class="text-gray-500 mt-3 text-sm">กำลังโหลดข้อมูล...</p></div></div>
+    </div>
+  </div>
+
+  <script>
+    // -------------------------------------------------------------------------
+    // URL API จาก Google Apps Script (อย่าแก้ไขส่วนนี้)
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSUbnnq8LCCf-5rWLQsvNUqZGPEKJEtNCus5HACYQM7X0urZtXwhYyGJY-FS3wIhKK/exec";
+    // -------------------------------------------------------------------------
+
+    let allRequestsData = [];
+    let filteredRequestsData = [];
+    let currentPage = 1;
+    const rowsPerPage = 20;
+
+    function switchTab(tab) {
+      const btnForm = document.getElementById('btn-form'), btnDash = document.getElementById('btn-dash');
+      const secForm = document.getElementById('section-form'), secDash = document.getElementById('section-dash');
+
+      if(tab === 'form') {
+        secForm.style.display = 'block'; secDash.style.display = 'none';
+        btnForm.className = "flex-1 py-2.5 rounded-full bg-teal-600 text-white font-medium shadow-md transition-all text-sm flex justify-center items-center";
+        btnDash.className = "flex-1 py-2.5 rounded-full bg-white text-gray-600 border border-gray-200 font-medium hover:bg-gray-100 transition-all text-sm flex justify-center items-center";
+      } else {
+        secForm.style.display = 'none'; secDash.style.display = 'block';
+        btnDash.className = "flex-1 py-2.5 rounded-full bg-teal-600 text-white font-medium shadow-md transition-all text-sm flex justify-center items-center";
+        btnForm.className = "flex-1 py-2.5 rounded-full bg-white text-gray-600 border border-gray-200 font-medium hover:bg-gray-100 transition-all text-sm flex justify-center items-center";
+        loadUserDashboard();
+      }
+    }
+
+    function loadUserDashboard() {
+      document.getElementById('userDashContent').innerHTML = '<div class="text-center py-10"><i class="fa-solid fa-spinner fa-spin text-3xl text-teal-400"></i><p class="text-gray-500 mt-3 text-sm">กำลังโหลดข้อมูล...</p></div>';
+      
+      // ดึงข้อมูลผ่าน fetch
+      fetch(SCRIPT_URL + "?action=getRequestsData")
+        .then(res => res.json())
+        .then(response => {
+          if (response.success) {
+            allRequestsData = response.data;
+            filteredRequestsData = [...allRequestsData]; 
+            document.getElementById('searchInput').value = ''; 
+            currentPage = 1; 
+            renderUserCards();
+          } else {
+            document.getElementById('userDashContent').innerHTML = '<div class="text-center py-10 bg-white rounded-xl border border-red-200"><p class="text-red-500 text-sm">เกิดข้อผิดพลาดในการโหลดข้อมูล</p></div>';
+          }
+        }).catch(err => {
+            document.getElementById('userDashContent').innerHTML = '<div class="text-center py-10 bg-white rounded-xl border border-red-200"><p class="text-red-500 text-sm">เชื่อมต่อเซิร์ฟเวอร์ไม่ได้</p></div>';
+        });
+    }
+
+    function filterData() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      filteredRequestsData = allRequestsData.filter(item => {
+        return (item.name && item.name.toLowerCase().includes(searchTerm)) ||
+               (item.reportName && item.reportName.toLowerCase().includes(searchTerm)) ||
+               (item.dept && item.dept.toLowerCase().includes(searchTerm)) ||
+               (item.status && item.status.toLowerCase().includes(searchTerm));
+      });
+      currentPage = 1; renderUserCards();
+    }
+
+    function renderUserCards() {
+      let html = '';
+      if(filteredRequestsData.length === 0) {
+        let emptyMessage = allRequestsData.length === 0 ? 'ยังไม่มีประวัติการขอข้อมูล' : 'ไม่พบข้อมูลที่ค้นหา';
+        let emptyIcon = allRequestsData.length === 0 ? 'fa-inbox' : 'fa-search';
+        document.getElementById('userDashContent').innerHTML = `<div class="text-center py-10 bg-white rounded-xl border border-gray-200"><i class="fa-solid ${emptyIcon} text-4xl text-gray-300 mb-3"></i><p class="text-gray-500 text-sm">${emptyMessage}</p></div>`;
+        return;
+      }
+
+      const totalPages = Math.ceil(filteredRequestsData.length / rowsPerPage);
+      const startIndex = (currentPage - 1) * rowsPerPage;
+      const displayData = filteredRequestsData.slice(startIndex, startIndex + rowsPerPage);
+
+      displayData.forEach(item => {
+        let statusColor, statusIcon;
+        if (item.status === 'รอดำเนินการ') { statusColor = 'bg-amber-100 text-amber-700 border-amber-200'; statusIcon = 'fa-hourglass-half'; }
+        else if (item.status === 'กำลังดำเนินการ') { statusColor = 'bg-blue-100 text-blue-700 border-blue-200'; statusIcon = 'fa-gears'; }
+        else if (item.status === 'ส่งไฟล์แล้ว') { statusColor = 'bg-green-100 text-green-700 border-green-200'; statusIcon = 'fa-check-circle'; }
+        else { statusColor = 'bg-red-100 text-red-700 border-red-200'; statusIcon = 'fa-ban'; } 
+
+        let attachIcon = item.fileUrl && item.fileUrl !== "-" ? `<a href="${item.fileUrl}" target="_blank" class="ml-2 text-teal-600 hover:text-teal-800 transition"><i class="fa-solid fa-paperclip"></i></a>` : '';
+        let typeBadge = item.dataType ? `<span class="bg-gray-100 border border-gray-200 text-gray-500 px-1.5 py-0.5 rounded text-[10px] ml-2 font-medium">${item.dataType}</span>` : '';
+        let cancelBox = (item.status === 'ยกเลิก' && item.cancelReason) ? `<div class="mt-3 bg-red-50 border border-red-200 p-2.5 rounded-lg text-xs text-red-800"><i class="fa-solid fa-circle-info mr-1"></i> <b>เหตุผลที่ยกเลิก:</b> ${item.cancelReason}</div>` : '';
+
+        html += `
+          <div class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm relative overflow-hidden transition hover:shadow-md">
+            <div class="absolute top-0 left-0 w-1 h-full ${statusColor.split(' ')[0]}"></div>
+            <div class="flex justify-between items-start mb-2 pl-2">
+              <div class="text-[11px] text-gray-400"><i class="fa-regular fa-calendar mr-1"></i> ${item.timestamp}</div>
+              <div class="px-2.5 py-1 rounded-full text-[10px] font-semibold border flex items-center ${statusColor}">
+                <i class="fa-solid ${statusIcon} mr-1"></i> ${item.status}
+              </div>
+            </div>
+            <div class="pl-2">
+              <h4 class="font-semibold text-gray-800 text-sm md:text-base leading-tight mb-1">${item.reportName} ${typeBadge} ${attachIcon}</h4>
+              <div class="flex items-center justify-between mt-2">
+                <div class="text-xs text-gray-500"><i class="fa-solid fa-user-tag mr-1 text-gray-400"></i> ${item.name}</div>
+                <div class="text-[10px] text-teal-600 bg-teal-50 px-2 py-0.5 rounded">${item.dept}</div>
+              </div>
+              ${cancelBox}
+            </div>
+          </div>
+        `;
+      });
+
+      html += `
+        <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
+          <button onclick="prevPage()" class="px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 shadow-sm" ${currentPage === 1 ? 'disabled' : ''}>ก่อนหน้า</button>
+          <span class="text-sm text-gray-600 font-medium bg-white px-3 py-1.5 rounded-lg border border-gray-100 shadow-sm">หน้า ${currentPage} / ${totalPages}</span>
+          <button onclick="nextPage()" class="px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 shadow-sm" ${currentPage === totalPages ? 'disabled' : ''}>ถัดไป</button>
+        </div>
+      `;
+      document.getElementById('userDashContent').innerHTML = html;
+    }
+
+    function prevPage() { if (currentPage > 1) { currentPage--; renderUserCards(); document.getElementById('searchInput').scrollIntoView({ behavior: 'smooth', block: 'start' }); } }
+    function nextPage() { const total = Math.ceil(filteredRequestsData.length / rowsPerPage); if (currentPage < total) { currentPage++; renderUserCards(); document.getElementById('searchInput').scrollIntoView({ behavior: 'smooth', block: 'start' }); } }
+
+    function goToAdmin() {
+      window.location.href = 'admin.html'; // ลิงก์ไปหน้า admin ที่อยู่ในโฟลเดอร์เดียวกันบน github
+    }
+
+    function handleFormSubmit(event) {
+      event.preventDefault(); 
+      const form = document.getElementById('dataRequestForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const originalBtnHtml = submitBtn.innerHTML;
+      
+      submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> กำลังอัปโหลด...';
+      submitBtn.classList.replace('bg-teal-600', 'bg-gray-400');
+
+      const data = Object.fromEntries(new FormData(form).entries());
+      const file = document.getElementById('fileUpload').files[0];
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          data.fileData = e.target.result; data.fileName = file.name; data.mimeType = file.type;
+          sendDataToBackend(data, form, submitBtn, originalBtnHtml);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        sendDataToBackend(data, form, submitBtn, originalBtnHtml);
+      }
+    }
+
+    function sendDataToBackend(data, form, submitBtn, originalBtnHtml) {
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'saveData', payload: data })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if(res.success) {
+          Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'ส่งคำขอเรียบร้อย', showConfirmButton: false, timer: 3000 });
+          form.reset(); 
+          submitBtn.disabled = false; submitBtn.innerHTML = originalBtnHtml; submitBtn.classList.replace('bg-gray-400', 'bg-teal-600');
+          switchTab('dash'); 
+        } else {
+          Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: res.message, showConfirmButton: false, timer: 4000 });
+          submitBtn.disabled = false; submitBtn.innerHTML = originalBtnHtml; submitBtn.classList.replace('bg-gray-400', 'bg-teal-600');
+        }
+      }).catch(err => {
+          Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'เชื่อมต่อเครือข่ายล้มเหลว', showConfirmButton: false, timer: 4000 });
+          submitBtn.disabled = false; submitBtn.innerHTML = originalBtnHtml; submitBtn.classList.replace('bg-gray-400', 'bg-teal-600');
+      });
+    }
+  </script>
+</body>
+</html>
