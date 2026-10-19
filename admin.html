@@ -165,7 +165,7 @@
         let editBtn = `<button onclick="editRequest(${item.row})" class="hover:bg-amber-100 border border-amber-300 text-amber-600 bg-white px-2.5 py-1.5 rounded-lg text-xs font-medium shadow-sm transition" title="แก้ไขข้อมูล"><i class="fa-solid fa-pen-to-square text-sm"></i></button>`;
         let deleteBtn = `<button onclick="deleteRequest(${item.row})" class="hover:bg-red-100 border border-red-300 text-red-500 bg-white px-2.5 py-1.5 rounded-lg text-xs font-medium shadow-sm transition" title="ลบข้อมูล"><i class="fa-solid fa-trash text-sm"></i></button>`;
 
-        let rowBg = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
+       let rowBg = index % 2 === 0 ? 'bg-white' : 'bg-green-100';
 
         html += `
           <tr class="${rowBg} hover:bg-gray-100 transition">
