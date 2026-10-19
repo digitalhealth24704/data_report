@@ -46,7 +46,7 @@
       </div>
     </div>
 
-    <!-- ส่วนสรุปข้อมูล (เพิ่มระบบคลิกเพื่อกรอง) -->
+    <!-- ส่วนสรุปข้อมูล -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-4 px-1">
       <div id="card-ทั้งหมด" onclick="filterTable('ทั้งหมด')" class="bg-white rounded-xl shadow-sm p-4 border border-gray-200 border-l-4 border-l-teal-500 cursor-pointer hover:bg-teal-50 transition ring-2 ring-teal-400 ring-offset-1">
         <p class="text-xs text-gray-500 font-medium">คำขอทั้งหมด</p>
@@ -94,7 +94,7 @@
     let requestsData = []; 
     let currentPage = 1;       
     const rowsPerPage = 8;     
-    let currentFilter = 'ทั้งหมด'; // ตัวแปรเก็บสถานะการกรองข้อมูลปัจจุบัน
+    let currentFilter = 'ทั้งหมด'; 
 
     function goHome() { window.location.href = 'index.html'; }
 
@@ -122,7 +122,6 @@
           requestsData = response.data; 
           
           updateSummary(); 
-          // บังคับให้รีเซ็ตตัวกรองเป็น 'ทั้งหมด' เมื่อโหลดข้อมูลใหม่
           filterTable('ทั้งหมด'); 
         }).catch(err => Swal.fire('Error', 'โหลดข้อมูลไม่สำเร็จ', 'error'));
     }
@@ -134,12 +133,10 @@
       document.getElementById('count-done').innerText = requestsData.filter(r => r.status === 'ส่งไฟล์แล้ว').length;
     }
 
-    // ฟังก์ชันจัดการการคลิกกล่องเพื่อกรองข้อมูล
     function filterTable(status) {
       currentFilter = status;
-      currentPage = 1; // รีเซ็ตหน้ากลับเป็นหน้าที่ 1
+      currentPage = 1; 
       
-      // อัปเดตความสว่างและสีขอบของกล่องที่ถูกเลือก
       const cards = ['ทั้งหมด', 'รอดำเนินการ', 'กำลังดำเนินการ', 'ส่งไฟล์แล้ว'];
       const ringColors = ['ring-teal-400', 'ring-amber-400', 'ring-blue-400', 'ring-green-400'];
       
@@ -159,16 +156,13 @@
       renderTablePage();
     }
 
-    // ฟังก์ชันดึงข้อมูลเฉพาะสถานะที่เลือก
     function getFilteredData() {
-      return currentFilter === 'ทั้งหมด' 
-        ? requestsData 
-        : requestsData.filter(item => item.status === currentFilter);
+      return currentFilter === 'ทั้งหมด' ? requestsData : requestsData.filter(item => item.status === currentFilter);
     }
 
     function renderTablePage() {
       let html = '';
-      const filteredData = getFilteredData(); // เรียกใช้ข้อมูลที่กรองแล้ว
+      const filteredData = getFilteredData(); 
 
       if(filteredData.length === 0) {
         document.getElementById('tableBody').innerHTML = `<tr><td colspan="5" class="text-center py-10 text-gray-500">ไม่พบข้อมูลคำขอในสถานะ "${currentFilter}"</td></tr>`;
@@ -177,7 +171,6 @@
       }
 
       const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-      // ตรวจสอบเผื่อหน้าปัจจุบันเกินหน้าทั้งหมด
       if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
       if (totalPages === 0) currentPage = 1;
 
@@ -197,8 +190,8 @@
         let typeBadge = item.dataType ? `<span class="bg-gray-100 text-gray-600 border border-gray-200 px-1.5 py-0.5 rounded text-[10px] ml-2 font-medium">${item.dataType}</span>` : '';
         let sqlIconClass = item.sql && item.sql.trim() !== "" ? "text-teal-600 border-teal-600 bg-teal-50" : "text-gray-400 border-gray-300 bg-white";
         
+        // เหลือแค่ปุ่มเปิด SQL โค้ด
         let sqlBtn = `<button onclick="openSqlModal(${item.row})" class="hover:bg-teal-100 border ${sqlIconClass} px-2.5 py-1.5 rounded-lg text-xs font-medium shadow-sm transition" title="จัดการคำสั่ง SQL"><i class="fa-solid fa-code text-sm"></i></button>`;
-        let editBtn = `<button onclick="editRequest(${item.row})" class="hover:bg-amber-100 border border-amber-300 text-amber-600 bg-white px-2.5 py-1.5 rounded-lg text-xs font-medium shadow-sm transition" title="แก้ไขข้อมูล"><i class="fa-solid fa-pen-to-square text-sm"></i></button>`;
 
         let rowBg = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
 
@@ -229,7 +222,6 @@
                 </div>
                 <div class="flex space-x-1 w-full justify-center">
                   ${sqlBtn}
-                  ${editBtn}
                 </div>
               </div>
             </td>
@@ -284,36 +276,6 @@
           updateSummary(); renderTablePage();
         } else { Swal.fire('เกิดข้อผิดพลาด', res.message, 'error'); }
       }).catch(err => Swal.fire('Error', 'การเชื่อมต่อขัดข้อง', 'error'));
-    }
-
-    function editRequest(row) {
-      const item = requestsData.find(r => r.row === row);
-      Swal.fire({
-        title: '<span class="text-xl font-bold text-gray-800">แก้ไขข้อมูลคำขอ</span>',
-        html: `
-          <div class="space-y-3 text-left text-sm mt-3">
-            <div><label class="font-medium text-teal-700">ชื่อผู้ขอ</label><input id="edit-name" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring-2 focus:ring-teal-500 outline-none" value="${item.name}"></div>
-            <div><label class="font-medium text-teal-700">แผนก / หน่วยงาน</label><input id="edit-dept" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring-2 focus:ring-teal-500 outline-none" value="${item.dept}"></div>
-            <div><label class="font-medium text-teal-700">ชื่อรายงาน / ข้อมูลที่ต้องการ</label><input id="edit-report" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring-2 focus:ring-teal-500 outline-none" value="${item.reportName}"></div>
-          </div>
-        `,
-        showCancelButton: true, confirmButtonColor: '#0d9488', confirmButtonText: 'บันทึกการแก้ไข', cancelButtonText: 'ยกเลิก',
-        preConfirm: () => {
-          return { name: document.getElementById('edit-name').value, dept: document.getElementById('edit-dept').value, reportName: document.getElementById('edit-report').value }
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire({ title: 'กำลังบันทึก...', showConfirmButton: false, didOpen: () => Swal.showLoading() });
-          fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'editRequest', payload: { row: row, data: result.value } }) })
-          .then(res => res.json())
-          .then(res => {
-            if(res.success) {
-              Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'แก้ไขสำเร็จ', showConfirmButton: false, timer: 2000 });
-              loadData(); 
-            } else { Swal.fire('เกิดข้อผิดพลาด', res.message, 'error'); }
-          }).catch(err => Swal.fire('Error', 'การเชื่อมต่อขัดข้อง', 'error'));
-        }
-      });
     }
 
     let sqlEditorInstance = null;
