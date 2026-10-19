@@ -44,47 +44,62 @@
         </div>
       </div>
 
-      <form id="dataRequestForm" class="p-6 space-y-5" onsubmit="handleFormSubmit(event)">
+<form id="dataRequestForm" class="p-6 space-y-5" onsubmit="handleFormSubmit(event)">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
-            <label class="block text-sm font-medium text-teal-800 mb-1"><i class="fa-solid fa-user text-teal-500 mr-1"></i> ชื่อ-สกุล ผู้ขอ</label>
-            <input type="text" name="requesterName" required class="w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-teal-500 text-sm">
+            <label class="block text-sm font-medium text-teal-800 mb-1">
+              <i class="fa-solid fa-user text-teal-500 mr-1"></i> ชื่อ-สกุล ผู้ขอ <span class="text-red-500">*</span>
+            </label>
+            <input type="text" name="requesterName" required class="w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-teal-500 focus:bg-white transition text-sm">
           </div>
           <div>
-            <label class="block text-sm font-medium text-teal-800 mb-1"><i class="fa-solid fa-house-medical text-teal-500 mr-1"></i> แผนก / หน่วยงาน</label>
-            <input type="text" name="department" required class="w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-teal-500 text-sm">
+            <label class="block text-sm font-medium text-teal-800 mb-1">
+              <i class="fa-solid fa-house-medical text-teal-500 mr-1"></i> แผนก / หน่วยงาน <span class="text-red-500">*</span>
+            </label>
+            <input type="text" name="department" required class="w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-teal-500 focus:bg-white transition text-sm">
           </div>
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-teal-800 mb-2"><i class="fa-solid fa-list-check text-teal-500 mr-1"></i> รูปแบบข้อมูลที่ต้องการ</label>
+          <label class="block text-sm font-medium text-teal-800 mb-2">
+            <i class="fa-solid fa-list-check text-teal-500 mr-1"></i> รูปแบบข้อมูลที่ต้องการ <span class="text-red-500">*</span>
+          </label>
           <div class="flex space-x-6 pl-1">
             <label class="inline-flex items-center cursor-pointer">
-              <input type="radio" name="dataType" value="รายชื่อ" required class="text-teal-600 focus:ring-teal-500 w-4 h-4">
+              <input type="radio" name="dataType" value="รายชื่อ" required class="form-radio text-teal-600 focus:ring-teal-500 w-4 h-4">
               <span class="ml-2 text-sm text-gray-700">รายชื่อ (เช่น ไฟล์ Excel)</span>
             </label>
             <label class="inline-flex items-center cursor-pointer">
-              <input type="radio" name="dataType" value="จำนวน" required class="text-teal-600 focus:ring-teal-500 w-4 h-4">
+              <input type="radio" name="dataType" value="จำนวน" required class="form-radio text-teal-600 focus:ring-teal-500 w-4 h-4">
               <span class="ml-2 text-sm text-gray-700">จำนวน (ตัวเลขสถิติ)</span>
             </label>
           </div>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-teal-800 mb-1"><i class="fa-solid fa-file-lines text-teal-500 mr-1"></i> ชื่อรายงาน / ข้อมูลที่ต้องการ</label>
-          <input type="text" name="reportName" required class="w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-teal-500 text-sm">
+          <label class="block text-sm font-medium text-teal-800 mb-1">
+            <i class="fa-solid fa-file-lines text-teal-500 mr-1"></i> ชื่อรายงาน / ข้อมูลที่ต้องการ <span class="text-red-500">*</span>
+          </label>
+          <input type="text" name="reportName" required class="w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-teal-500 focus:bg-white transition text-sm">
         </div>
         <div>
-          <label class="block text-sm font-medium text-teal-800 mb-1"><i class="fa-solid fa-bullseye text-teal-500 mr-1"></i> วัตถุประสงค์การนำไปใช้</label>
-          <input type="text" name="purpose" required class="w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-teal-500 text-sm">
+          <label class="block text-sm font-medium text-teal-800 mb-1">
+            <i class="fa-solid fa-bullseye text-teal-500 mr-1"></i> วัตถุประสงค์การนำไปใช้ <span class="text-red-500">*</span>
+          </label>
+          <input type="text" name="purpose" required class="w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-teal-500 focus:bg-white transition text-sm">
         </div>
         <div>
-          <label class="block text-sm font-medium text-teal-800 mb-1"><i class="fa-solid fa-database text-teal-500 mr-1"></i> เงื่อนไขการดึงข้อมูล (ระบุให้ชัดเจน)</label>
-          <textarea name="criteria" required rows="3" class="w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-teal-500 text-sm placeholder-gray-400" placeholder="ช่วงวันที่ต้องการข้อมูล แผนกที่ตรวจ รหัสโรค/หัตถการ หรือเงื่อนไขอื่นๆ"></textarea>
+          <label class="block text-sm font-medium text-teal-800 mb-1">
+            <i class="fa-solid fa-database text-teal-500 mr-1"></i> เงื่อนไขการดึงข้อมูล (ระบุให้ชัดเจน) <span class="text-red-500">*</span>
+          </label>
+          <textarea name="criteria" required rows="3" class="w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 focus:ring-2 focus:ring-teal-500 focus:bg-white transition text-sm placeholder-gray-400" placeholder="ช่วงวันที่ต้องการข้อมูล แผนกที่ตรวจ รหัสโรค/หัตถการ หรือเงื่อนไขอื่นๆ"></textarea>
         </div>
         <div>
-          <label class="block text-sm font-medium text-teal-800 mb-1"><i class="fa-solid fa-paperclip text-teal-500 mr-1"></i> แนบไฟล์ Template / ตัวอย่าง (ถ้ามี)</label>
-          <input type="file" id="fileUpload" class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 transition cursor-pointer">
+          <label class="block text-sm font-medium text-teal-800 mb-1">
+            <i class="fa-solid fa-paperclip text-teal-500 mr-1"></i> แนบไฟล์ Template / ตัวอย่าง (ถ้ามี)
+          </label>
+          <input type="file" id="fileUpload" class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 transition outline-none cursor-pointer">
+          <p class="text-xs text-gray-400 mt-1 pl-1">รองรับไฟล์ Excel, Word, PDF หรือรูปภาพ (ไม่เกิน 10MB)</p>
         </div>
         
         <div class="pt-2">
