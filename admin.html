@@ -46,7 +46,7 @@
       </div>
     </div>
 
-    <!-- ส่วนสรุปข้อมูล -->
+    <!-- ส่วนสรุปข้อมูล (เพิ่มระบบคลิกเพื่อกรอง) -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-4 px-1">
       <div id="card-ทั้งหมด" onclick="filterTable('ทั้งหมด')" class="bg-white rounded-xl shadow-sm p-4 border border-gray-200 border-l-4 border-l-teal-500 cursor-pointer hover:bg-teal-50 transition ring-2 ring-teal-400 ring-offset-1">
         <p class="text-xs text-gray-500 font-medium">คำขอทั้งหมด</p>
@@ -190,7 +190,6 @@
         let typeBadge = item.dataType ? `<span class="bg-gray-100 text-gray-600 border border-gray-200 px-1.5 py-0.5 rounded text-[10px] ml-2 font-medium">${item.dataType}</span>` : '';
         let sqlIconClass = item.sql && item.sql.trim() !== "" ? "text-teal-600 border-teal-600 bg-teal-50" : "text-gray-400 border-gray-300 bg-white";
         
-        // เหลือแค่ปุ่มเปิด SQL โค้ด
         let sqlBtn = `<button onclick="openSqlModal(${item.row})" class="hover:bg-teal-100 border ${sqlIconClass} px-2.5 py-1.5 rounded-lg text-xs font-medium shadow-sm transition" title="จัดการคำสั่ง SQL"><i class="fa-solid fa-code text-sm"></i></button>`;
 
         let rowBg = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
@@ -210,19 +209,15 @@
               <span id="status-badge-${item.row}" class="px-3 py-1 rounded-full text-[11px] font-bold tracking-wide ${badgeClass}">${item.status}</span>
             </td>
             <td class="px-5 py-4 text-center">
-              <div class="flex flex-col gap-2 items-center justify-center">
-                <div class="flex space-x-1 w-full justify-center">
-                  <select id="status-select-${item.row}" class="border border-gray-300 rounded-lg text-xs p-1.5 bg-white focus:ring-teal-500 focus:border-teal-500 font-medium text-gray-700 outline-none">
-                    <option value="รอดำเนินการ" ${item.status === 'รอดำเนินการ' ? 'selected' : ''}>⏳ รอดำเนินการ</option>
-                    <option value="กำลังดำเนินการ" ${item.status === 'กำลังดำเนินการ' ? 'selected' : ''}>⚙️ กำลังดำเนินการ</option>
-                    <option value="ส่งไฟล์แล้ว" ${item.status === 'ส่งไฟล์แล้ว' ? 'selected' : ''}>✅ ส่งไฟล์แล้ว</option>
-                    <option value="ยกเลิก" ${item.status === 'ยกเลิก' ? 'selected' : ''}>❌ ยกเลิก</option>
-                  </select>
-                  <button onclick="saveStatus(${item.row})" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow-sm transition">บันทึก</button>
-                </div>
-                <div class="flex space-x-1 w-full justify-center">
-                  ${sqlBtn}
-                </div>
+              <div class="flex items-center justify-center space-x-1.5">
+                <select id="status-select-${item.row}" class="border border-gray-300 rounded-lg text-xs p-1.5 bg-white focus:ring-teal-500 focus:border-teal-500 font-medium text-gray-700 outline-none w-[110px]">
+                  <option value="รอดำเนินการ" ${item.status === 'รอดำเนินการ' ? 'selected' : ''}>⏳ รอดำเนินการ</option>
+                  <option value="กำลังดำเนินการ" ${item.status === 'กำลังดำเนินการ' ? 'selected' : ''}>⚙️ กำลังดำเนินการ</option>
+                  <option value="ส่งไฟล์แล้ว" ${item.status === 'ส่งไฟล์แล้ว' ? 'selected' : ''}>✅ ส่งไฟล์แล้ว</option>
+                  <option value="ยกเลิก" ${item.status === 'ยกเลิก' ? 'selected' : ''}>❌ ยกเลิก</option>
+                </select>
+                <button onclick="saveStatus(${item.row})" class="bg-teal-600 hover:bg-teal-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-medium shadow-sm transition">บันทึก</button>
+                ${sqlBtn}
               </div>
             </td>
           </tr>
