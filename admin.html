@@ -46,7 +46,7 @@
       </div>
     </div>
 
-    <!-- ส่วนสรุปข้อมูล (เพิ่มระบบคลิกเพื่อกรอง) -->
+    <!-- ส่วนสรุปข้อมูล -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-4 px-1">
       <div id="card-ทั้งหมด" onclick="filterTable('ทั้งหมด')" class="bg-white rounded-xl shadow-sm p-4 border border-gray-200 border-l-4 border-l-teal-500 cursor-pointer hover:bg-teal-50 transition ring-2 ring-teal-400 ring-offset-1">
         <p class="text-xs text-gray-500 font-medium">คำขอทั้งหมด</p>
@@ -183,7 +183,7 @@
                          item.status === 'ส่งไฟล์แล้ว' ? 'bg-green-100 text-green-800' : 
                          item.status === 'กำลังดำเนินการ' ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800';
         
-        // เพิ่ม onclick="event.stopPropagation()" เพื่อไม่ให้ปุ่มกดซ้อนทับกับการคลิกดูรายละเอียดของตาราง
+        // ใช้ event.stopPropagation() เพื่อไม่ให้ปุ่มทับซ้อนกับการคลิกดูข้อมูล
         let fileBtn = item.fileUrl && item.fileUrl !== "-" 
           ? `<a href="${item.fileUrl}" target="_blank" onclick="event.stopPropagation()" class="inline-flex items-center mt-1.5 px-2 py-1 bg-blue-50 text-blue-600 rounded text-[11px] hover:bg-blue-100 transition border border-blue-100"><i class="fa-solid fa-paperclip mr-1.5"></i> ดูไฟล์แนบ</a>`
           : `<div class="mt-1.5 text-[11px] text-gray-400">ไม่มีไฟล์แนบ</div>`;
@@ -191,25 +191,26 @@
         let typeBadge = item.dataType ? `<span class="bg-gray-100 text-gray-600 border border-gray-200 px-1.5 py-0.5 rounded text-[10px] ml-2 font-medium">${item.dataType}</span>` : '';
         let sqlIconClass = item.sql && item.sql.trim() !== "" ? "text-teal-600 border-teal-600 bg-teal-50" : "text-gray-400 border-gray-300 bg-white";
         
-        let sqlBtn = `<button onclick="openSqlModal(${item.row})" class="hover:bg-teal-100 border ${sqlIconClass} px-2.5 py-1.5 rounded-lg text-xs font-medium shadow-sm transition" title="จัดการคำสั่ง SQL"><i class="fa-solid fa-code text-sm"></i></button>`;
+        let sqlBtn = `<button onclick="openSqlModal(${item.row}); event.stopPropagation();" class="hover:bg-teal-100 border ${sqlIconClass} px-2.5 py-1.5 rounded-lg text-xs font-medium shadow-sm transition" title="จัดการคำสั่ง SQL"><i class="fa-solid fa-code text-sm"></i></button>`;
 
         let rowBg = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
 
+        // เพิ่ม onclick ที่บรรทัด (tr) เพื่อให้คลิกแล้วเปิดดูข้อมูล
         html += `
-          <tr class="${rowBg} hover:bg-teal-50 transition group cursor-pointer">
-            <td class="px-5 py-4 text-gray-500 text-xs" onclick="viewDetails(${item.row})">${item.timestamp}</td>
-            <td class="px-5 py-4" onclick="viewDetails(${item.row})">
+          <tr class="${rowBg} hover:bg-teal-50 transition cursor-pointer group" onclick="viewDetails(${item.row})" title="คลิกเพื่อดูรายละเอียด">
+            <td class="px-5 py-4 text-gray-500 text-xs">${item.timestamp}</td>
+            <td class="px-5 py-4">
               <p class="font-semibold text-gray-800 group-hover:text-teal-700 transition">${item.name}</p>
               <p class="text-xs text-teal-600 mt-0.5">${item.dept}</p>
             </td>
-            <td class="px-5 py-4 text-gray-700 whitespace-normal min-w-[200px]" onclick="viewDetails(${item.row})">
+            <td class="px-5 py-4 text-gray-700 whitespace-normal min-w-[200px]">
               <p class="font-medium group-hover:text-teal-700 transition">${item.reportName} ${typeBadge}</p>
               ${fileBtn}
             </td>
-            <td class="px-5 py-4 text-center cursor-default">
+            <td class="px-5 py-4 text-center cursor-default" onclick="event.stopPropagation()">
               <span id="status-badge-${item.row}" class="px-3 py-1 rounded-full text-[11px] font-bold tracking-wide ${badgeClass}">${item.status}</span>
             </td>
-            <td class="px-5 py-4 text-center cursor-default">
+            <td class="px-5 py-4 text-center cursor-default" onclick="event.stopPropagation()">
               <div class="flex items-center justify-center space-x-1.5">
                 <select id="status-select-${item.row}" class="border border-gray-300 rounded-lg text-xs p-1.5 bg-white focus:ring-teal-500 focus:border-teal-500 font-medium text-gray-700 outline-none w-[110px]">
                   <option value="รอดำเนินการ" ${item.status === 'รอดำเนินการ' ? 'selected' : ''}>⏳ รอดำเนินการ</option>
@@ -217,7 +218,7 @@
                   <option value="ส่งไฟล์แล้ว" ${item.status === 'ส่งไฟล์แล้ว' ? 'selected' : ''}>✅ ส่งไฟล์แล้ว</option>
                   <option value="ยกเลิก" ${item.status === 'ยกเลิก' ? 'selected' : ''}>❌ ยกเลิก</option>
                 </select>
-                <button onclick="saveStatus(${item.row})" class="bg-teal-600 hover:bg-teal-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-medium shadow-sm transition">บันทึก</button>
+                <button onclick="saveStatus(${item.row});" class="bg-teal-600 hover:bg-teal-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-medium shadow-sm transition">บันทึก</button>
                 ${sqlBtn}
               </div>
             </td>
@@ -239,6 +240,7 @@
       `;
       document.getElementById('paginationControls').innerHTML = paginationHtml;
     }
+
     function prevPage() { if (currentPage > 1) { currentPage--; renderTablePage(); } }
     function nextPage() { 
       const filteredData = getFilteredData();
@@ -271,6 +273,48 @@
           updateSummary(); renderTablePage();
         } else { Swal.fire('เกิดข้อผิดพลาด', res.message, 'error'); }
       }).catch(err => Swal.fire('Error', 'การเชื่อมต่อขัดข้อง', 'error'));
+    }
+
+    // ฟังก์ชันสำหรับเปิดหน้าต่างดูรายละเอียดเมื่อคลิกที่แถว
+    function viewDetails(row) {
+      const item = requestsData.find(r => r.row === row);
+      if(!item) return;
+
+      let fileBtn = item.fileUrl && item.fileUrl !== "-" 
+        ? `<a href="${item.fileUrl}" target="_blank" class="inline-block mt-2 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-sm hover:bg-blue-100 border border-blue-200 transition"><i class="fa-solid fa-paperclip mr-1.5"></i> ดูไฟล์แนบ</a>`
+        : `<div class="mt-2 text-sm text-gray-400">ไม่มีไฟล์แนบ</div>`;
+
+      Swal.fire({
+        title: '<span class="text-xl font-bold text-teal-700">รายละเอียดคำขอข้อมูล</span>',
+        html: `
+          <div class="text-left text-sm space-y-4 mt-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+            <div class="grid grid-cols-2 gap-4 border-b border-gray-200 pb-3">
+              <div><p class="text-gray-500 text-xs">ผู้ขอ</p><p class="font-medium text-gray-800">${item.name}</p></div>
+              <div><p class="text-gray-500 text-xs">แผนก/หน่วยงาน</p><p class="font-medium text-gray-800">${item.dept}</p></div>
+            </div>
+            <div class="border-b border-gray-200 pb-3">
+              <p class="text-gray-500 text-xs">ชื่อรายงาน / ข้อมูลที่ต้องการ</p>
+              <p class="font-medium text-gray-800 mt-1">${item.reportName} <span class="bg-gray-200 text-gray-700 px-2 py-0.5 rounded text-[10px] ml-1">${item.dataType || '-'}</span></p>
+            </div>
+            <div class="border-b border-gray-200 pb-3">
+              <p class="text-gray-500 text-xs">วัตถุประสงค์การนำไปใช้</p>
+              <p class="font-medium text-gray-800 mt-1">${item.purpose || 'ไม่ได้ระบุ'}</p>
+            </div>
+            <div class="border-b border-gray-200 pb-3">
+              <p class="text-gray-500 text-xs">เงื่อนไขการดึงข้อมูล</p>
+              <p class="font-medium text-gray-800 mt-1 whitespace-pre-wrap">${item.criteria || 'ไม่ได้ระบุ'}</p>
+            </div>
+            <div>
+              <p class="text-gray-500 text-xs">ไฟล์แนบ</p>
+              ${fileBtn}
+            </div>
+          </div>
+        `,
+        showConfirmButton: true,
+        confirmButtonText: 'ปิด',
+        confirmButtonColor: '#0d9488',
+        width: '600px'
+      });
     }
 
     let sqlEditorInstance = null;
